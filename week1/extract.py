@@ -67,7 +67,7 @@ def main() -> None:
         {"role": "system", "content": SYSTEM},
         {"role": "user", "content": text},
     ]
-    model = llm.DEFAULT_CHAT_MODEL
+    model = llm.active_chat_model()
     input_tokens = llm.count_message_tokens(messages, model=model)
 
     contact = llm.parse(
