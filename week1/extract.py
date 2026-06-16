@@ -34,6 +34,7 @@ class Contact(BaseModel):
 
     name: Optional[str] = Field(None, description="Person's full name")
     email: Optional[str] = Field(None, description="Email address")
+    role: Optional[str] = Field(None, description="Role of the person")
     company: Optional[str] = Field(None, description="Company name, if mentioned")
     plan: Optional[str] = Field(None, description="Plan or product of interest")
     demo_requested: bool = Field(False, description="True if they asked for a demo")
@@ -41,7 +42,10 @@ class Contact(BaseModel):
 
 SYSTEM = (
     "Extract contact details from the text into the given schema. "
-    "If a field is not present, leave it null — do not guess or invent values."
+    "If a field is not present, leave it null — do not guess or invent values. "
+    "Set demo_requested to true when the text asks for a demo, showing, "
+    "walkthrough, product tour, or to be shown the product. "
+    "Keep it false when the text explicitly says no demo is needed."
 )
 
 
@@ -59,14 +63,25 @@ def main() -> None:
         print("No input. Pipe text in or pass a file path.", file=sys.stderr)
         sys.exit(1)
 
+    messages = [
+        {"role": "system", "content": SYSTEM},
+        {"role": "user", "content": text},
+    ]
+    model = llm.DEFAULT_CHAT_MODEL
+    input_tokens = llm.count_message_tokens(messages, model=model)
+
     contact = llm.parse(
-        messages=[
-            {"role": "system", "content": SYSTEM},
-            {"role": "user", "content": text},
-        ],
+        messages=messages,
         response_format=Contact,
+        model=model,
     )
-    print(contact.model_dump_json(indent=2))
+    output_json = contact.model_dump_json(indent=2)
+    output_tokens = llm.count_tokens(output_json, model=model)
+    print(output_json)
+    print(
+        f"[{llm.format_usage_estimate(input_tokens, output_tokens, model=model)}]",
+        file=sys.stderr,
+    )
 
 
 if __name__ == "__main__":

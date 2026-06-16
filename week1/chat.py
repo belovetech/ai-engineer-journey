@@ -61,15 +61,19 @@ def main() -> None:
             continue
 
         convo.add_user(user)
+        model = llm.DEFAULT_CHAT_MODEL
+        input_tokens = llm.count_message_tokens(convo.messages, model=model)
 
         # Stream the reply token-by-token, collecting it for the history.
         print("ai>  ", end="", flush=True)
         parts: list[str] = []
-        for chunk in llm.chat(convo.messages, stream=True):
+        for chunk in llm.chat(convo.messages, model=model, stream=True):
             print(chunk, end="", flush=True)
             parts.append(chunk)
-        print("\n")
-        convo.add_assistant("".join(parts))
+        assistant_text = "".join(parts)
+        output_tokens = llm.count_tokens(assistant_text, model=model)
+        print(f"\n\n[{llm.format_usage_estimate(input_tokens, output_tokens, model=model)}]\n")
+        convo.add_assistant(assistant_text)
 
 
 if __name__ == "__main__":

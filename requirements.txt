@@ -2,9 +2,9 @@
 openai>=1.40
 pydantic>=2.7
 python-dotenv>=1.0
+tiktoken>=0.7
 
 # Added in later weeks (uncomment as you go):
-# tiktoken>=0.7        # token counting (week 1 stretch)
 # chromadb>=0.5        # vector store (week 2)
 # pypdf>=4.2           # PDF loading (week 2)
 # fastapi>=0.111       # serving the agent (week 4)
