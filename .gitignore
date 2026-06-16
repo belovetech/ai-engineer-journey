@@ -1,0 +1,20 @@
+# Secrets
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.eggs/
+*.egg-info/
+
+# Data / local stores (added in later weeks)
+chroma/
+*.sqlite3
+.cache/
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
