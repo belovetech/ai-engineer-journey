@@ -61,7 +61,7 @@ def main() -> None:
             continue
 
         convo.add_user(user)
-        model = llm.DEFAULT_CHAT_MODEL
+        model = llm.active_chat_model()
         input_tokens = llm.count_message_tokens(convo.messages, model=model)
 
         # Stream the reply token-by-token, collecting it for the history.
