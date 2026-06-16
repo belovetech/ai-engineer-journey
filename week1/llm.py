@@ -41,7 +41,9 @@ MODEL_PRICES_PER_1M = {
     "gpt-4.1-nano": {"input": 0.10, "output": 0.40},
     "gpt-4o": {"input": 2.50, "output": 10.00},
     "gpt-4o-mini": {"input": 0.15, "output": 0.60},
-    "gemini-3.1-flash-lite": {"input": 0.25, "output": 1.50},
+    "gemini-3.1-flash-lite": {"input": 0.025, "output": 0.10},
+    "gemini-2.5-flash": {"input": 0.15, "output": 0.60},
+    "gemini-2.0-flash-lite": {"input": 0.025, "output": 0.10},
 }
 
 _openai_client: OpenAI | None = None
