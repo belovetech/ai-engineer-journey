@@ -34,6 +34,7 @@ LLM_PROVIDER = os.getenv("LLM_PROVIDER", "openai").lower()
 DEFAULT_CHAT_MODEL = os.getenv("CHAT_MODEL", "gpt-4.1")
 DEFAULT_GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.1-flash-lite")
 DEFAULT_EMBED_MODEL = os.getenv("EMBED_MODEL", "text-embedding-3-small")
+DEFAULT_GEMINI_EMBED_MODEL = os.getenv("GEMINI_EMBED_MODEL", "gemini-embedding-001")
 
 MODEL_PRICES_PER_1M = {
     "gpt-4.1": {"input": 2.00, "output": 8.00},
@@ -191,12 +192,23 @@ def _gemini_parse(messages: list[dict], response_format, model: str, **opts):
 
 
 def embed(texts, model: str | None = None) -> list[list[float]]:
-    """Return a list of embedding vectors, one per input string. (Used in week 2.)"""
-    model = model or DEFAULT_EMBED_MODEL
+    """Return a list of embedding vectors, one per input string."""
     if isinstance(texts, str):
         texts = [texts]
+    if LLM_PROVIDER == "gemini":
+        return _gemini_embed(texts, model)
+    model = model or DEFAULT_EMBED_MODEL
     resp = _get_openai_client().embeddings.create(model=model, input=texts)
     return [d.embedding for d in resp.data]
+
+
+def _gemini_embed(texts: list[str], model: str | None = None) -> list[list[float]]:
+    model = model or DEFAULT_GEMINI_EMBED_MODEL
+    result = _get_gemini_client().models.embed_content(
+        model=model,
+        contents=texts,
+    )
+    return [e.values for e in result.embeddings]
 
 
 def count_tokens(text: str, model: str | None = None) -> int:
