@@ -9,8 +9,10 @@ venv/
 .eggs/
 *.egg-info/
 
-# Data / local stores (added in later weeks)
+# Data / local stores
 chroma/
+.chromadb/
+week2/.chromadb/
 *.sqlite3
 .cache/
 
